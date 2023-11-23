@@ -71,8 +71,7 @@ jobs:
             script: |
               const repoName = ${{ steps.generate_variables.outputs.result }};
               await github.rest.repos.createForAuthenticatedUser({
-                repoName,
-                owner: context.repo.owner
+                name: repoName
               });
 
         - name: Finish Workflow Comment
