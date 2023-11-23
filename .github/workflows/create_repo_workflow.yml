@@ -6,7 +6,7 @@ on:
       repo-name:
         required: true
         type: string
-     secrets:
+    secrets:
       temp-token:
         required: true
 
