@@ -22,6 +22,6 @@ jobs:
         script: |
           const repoName = ${{ inputs.repo-name }};
           // Logic to create a new repository
-          octokit.rest.repos.createForAuthenticatedUser({
+          github.rest.repos.createForAuthenticatedUser({
             repoName,
           });
