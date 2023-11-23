@@ -7,6 +7,6 @@ body:
     attributes:
       label: ">>repo-name<<"
       description: "New Repo name"
-      placeholder: ""
+      placeholder: "Add name"
     validations:
       required: true
