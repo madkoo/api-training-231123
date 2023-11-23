@@ -61,7 +61,7 @@ jobs:
           with:
             repo-name: ${{ steps.generate_variables.outputs.result }}
           secrets:
-            temp-token: ${{ steps.get_workflow_token_target.outputs.token }}
+            TEMP_TOKEN: ${{ steps.get_workflow_token_target.outputs.token }}
 
         - name: Finish Workflow Comment
           uses: actions/github-script@v6

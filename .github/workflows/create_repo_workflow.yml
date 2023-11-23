@@ -7,7 +7,7 @@ on:
         required: true
         type: string
     secrets:
-      temp-token:
+      TEMP_TOKEN:
         required: true
 
 jobs:
@@ -18,7 +18,7 @@ jobs:
     - name: Create a New Repository
       uses: actions/github-script@v7
       with:
-        github-token: ${{ secrets.temp-token }}
+        github-token: ${{ secrets.TEMP_TOKEN }}
         script: |
           const repoName = ${{ inputs.repo-name }};
           // Logic to create a new repository
