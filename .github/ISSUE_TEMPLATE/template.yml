@@ -1,0 +1,12 @@
+name: Create a new repository
+description: Template to provide input for repo creation
+title: "GitHub setting up IssueOps"
+labels: ["newRepo"]
+body:
+  - type: "input"
+    attributes:
+      label: ">>repo-name<<"
+      description: "New Repo name"
+      placeholder: ""
+    validations:
+      required: true
