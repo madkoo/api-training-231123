@@ -70,9 +70,9 @@ jobs:
             github-token: ${{ steps.get_workflow_token_target.outputs.token }}
             script: |
               const repoName = ${{ steps.generate_variables.outputs.result }};
-              // Logic to create a new repository
-              github.rest.repos.createForAuthenticatedUser({
+              await github.rest.repos.createForAuthenticatedUser({
                 repoName,
+                owner: context.repo.owner
               });
 
         - name: Finish Workflow Comment
