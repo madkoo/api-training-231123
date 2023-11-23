@@ -37,7 +37,7 @@ jobs:
           with:
             script: |
               const issueComment = context.payload.issue.number;
-              github.issues.createComment({
+              github.rest.issues.createComment({
                 issue_number: issueComment,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -67,7 +67,7 @@ jobs:
           with:
             script: |
               const issueComment = context.payload.issue.number;
-              github.issues.createComment({
+              github.rest.issues.createComment({
                 issue_number: issueComment,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
