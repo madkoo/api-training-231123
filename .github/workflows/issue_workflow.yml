@@ -69,10 +69,9 @@ jobs:
           with:
             github-token: ${{ secrets.MY_PAT }}
             script: |
-              const repoName = ${{ steps.generate_variables.outputs.result}};
+              const repoName = ${{ steps.generate_variables.outputs.result }};
               await github.rest.repos.createForAuthenticatedUser({
-                repoName,
-                owner: context.repo.owner
+                name: repoName
               });
               
        # - name: Create a New Repository
