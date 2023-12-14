@@ -5,36 +5,32 @@ on:
     types: [opened, edited]
 
 jobs:
-  get-token:
-    runs-on: ubuntu-latest
-    outputs:
-        token: ${{ steps.get_workflow_token_target.outputs.token }}
-    steps:
-        - name: Get Token for checkout target organizatiom
-          id: get_workflow_token_target
-          uses: peter-murray/workflow-application-token-action@v2
-          with:
-              application_id: ${{ secrets.APP_ID }}
-              application_private_key: ${{ secrets.APP_SECRET }}
+
   
   start-workflow:
-       needs: get-token
        uses: ./.github/workflows/comment_in_issue_workflow.yml
        with:
         issue_comment: "Workflow started"
         issue_number: ${{ github.event.issue.number }}
-       secrets: 
-         tempToken: ${{ needs.get-token.outputs.token }}
+       secrets: inherit
+         
   
   handle-issue:
     needs: start-workflow
     runs-on: ubuntu-latest
     steps:
-    
+          #Get token
+        - name: Get Token for checkout target organizatiom
+          id: get_workflow_token_target
+          uses: peter-murray/workflow-application-token-action@v2
+          with:
+            application_id: ${{ secrets.APP_ID }}
+            application_private_key: ${{ secrets.APP_SECRET }}
+            
         # Checkout
         - name: Checkout
           uses: actions/checkout@v3
-
+        
         #TODO: Add step to read input by using action peter-murray/issue-forms-body-parser
         - name: Run Issue form parser
           id: parse
@@ -61,7 +57,8 @@ jobs:
         - name: Create a New Repository
           uses: actions/github-script@v7
           with:
-            github-token: ${{ secrets.MY_PAT }}
+            #if app is installed on org level then can switch to token from Github App
+            github-token: ${{ secrets.MY_PAT }}  
             script: |
               const repoName = ${{ steps.generate_variables.outputs.result }};
               await github.rest.repos.createForAuthenticatedUser({
@@ -74,5 +71,5 @@ jobs:
        with:
         issue_comment: 'Workflow finished 🏁'
         issue_number: ${{ github.event.issue.number }}
-       secrets: 
-         tempToken: ${{ needs.get-token.outputs.token }}
+       secrets: inherit
+         
