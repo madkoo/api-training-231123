@@ -18,6 +18,7 @@ jobs:
               application_private_key: ${{ secrets.APP_SECRET }}
   
   start-workflow:
+       needs: get-token
        uses: ./.github/workflows/comment_in_issue_workflow.yml
        with:
         issue_comment: "Workflow started"
@@ -26,6 +27,7 @@ jobs:
          temp-token: ${{ needs.get-token.outputs.token }}
   
   handle-issue:
+    needs: start-workflow
     runs-on: ubuntu-latest
     steps:
     
@@ -67,6 +69,7 @@ jobs:
               });
     
   finish-workflow:
+       needs: handle-issue
        uses: ./.github/workflows/comment_in_issue_workflow.yml
        with:
         issue_comment: 'Workflow finished 🏁'
