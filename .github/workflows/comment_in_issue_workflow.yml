@@ -10,7 +10,7 @@ on:
         required: true
         type: number
     secrets:
-      temp-token:
+      tempToken:
         required: true
 
 jobs:
@@ -20,7 +20,7 @@ jobs:
     - name: Add comment to issue
       uses: actions/github-script@v6
       with:
-        github-token: ${{ inputs.temp-token }}
+        github-token: ${{ secrets.tempToken }}
         script: |
           const issueComment = context.payload.issue.number;
           github.rest.issues.createComment({
