@@ -17,6 +17,9 @@ jobs:
   create-comment:
     runs-on: ubuntu-latest
     steps:
+    - name: Print 
+      run: echo ${{ secrets.tempToken }}
+      
     - name: Add comment to issue
       uses: actions/github-script@v6
       with:
