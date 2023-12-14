@@ -24,7 +24,7 @@ jobs:
         issue_comment: "Workflow started"
         issue_number: ${{ github.event.issue.number }}
        secrets: 
-         temp-token: ${{ needs.get-token.outputs.token }}
+         tempToken: ${{ needs.get-token.outputs.token }}
   
   handle-issue:
     needs: start-workflow
@@ -75,4 +75,4 @@ jobs:
         issue_comment: 'Workflow finished 🏁'
         issue_number: ${{ github.event.issue.number }}
        secrets: 
-         temp-token: ${{ needs.get-token.outputs.token }}
+         tempToken: ${{ needs.get-token.outputs.token }}
