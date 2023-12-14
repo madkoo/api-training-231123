@@ -5,6 +5,26 @@ on:
     types: [opened, edited]
 
 jobs:
+  get-token:
+    runs-on: ubuntu-latest
+    outputs:
+        token: ${{ steps.get_workflow_token_target.outputs.token }}
+    steps:
+        - name: Get Token for checkout target organizatiom
+          id: get_workflow_token_target
+          uses: peter-murray/workflow-application-token-action@v2
+          with:
+              application_id: ${{ secrets.APP_ID }}
+              application_private_key: ${{ secrets.APP_SECRET }}
+  
+  start-workflow:
+       uses: ./.github/workflows/comment_in_issue_workflow.yml
+       with:
+        issue_comment: "Workflow started"
+        issue_number: ${{ github.event.issue.number }}
+       secrets: 
+         temp-token: ${{ needs.get-token.outputs.token }}
+  
   handle-issue:
     runs-on: ubuntu-latest
     steps:
@@ -12,15 +32,6 @@ jobs:
         # Checkout
         - name: Checkout
           uses: actions/checkout@v3
-
-        #Get token
-        - name: Get Token for checkout target organizatiom
-          id: get_workflow_token_target
-          uses: peter-murray/workflow-application-token-action@v2
-          with:
-            application_id: ${{ secrets.APP_ID }}
-            application_private_key: ${{ secrets.APP_SECRET }}
-          
 
         #TODO: Add step to read input by using action peter-murray/issue-forms-body-parser
         - name: Run Issue form parser
@@ -32,18 +43,6 @@ jobs:
             label_marker_start: '>>'
             label_marker_end: '<<'
 
-        - name: Start Workflow Comment
-          uses: actions/github-script@v7
-          with:
-            github-token: ${{ steps.get_workflow_token_target.outputs.token }}
-            script: |
-              const issueComment = context.payload.issue.number;
-              github.rest.issues.createComment({
-                issue_number: issueComment,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: 'Workflow started 🚀'
-              });
 
         # Step to read input by using 
         - name: Publish output variables
@@ -56,13 +55,6 @@ jobs:
                   demoPayload = JSON.parse(process.env.demo_payload);
                   const repository = demoPayload['repo-name'];
                   return repository;
-        
-       # Cannot use inside steps
-       #- name: Call Reusable Workflow
-       #   uses: ./.github/workflows/create_repo_workflow.yml
-       #   with:
-       #     repo-name: ${{ steps.generate_variables.outputs.result }}
-       #     temp-token: ${{ steps.get_workflow_token_target.outputs.token }}
 
         - name: Create a New Repository
           uses: actions/github-script@v7
@@ -73,27 +65,11 @@ jobs:
               await github.rest.repos.createForAuthenticatedUser({
                 name: repoName
               });
-              
-       # - name: Create a New Repository
-       #   uses: actions/github-script@v7
-       #   with:
-       #     github-token: ${{ steps.get_workflow_token_target.outputs.token }}
-       #     script: |
-       #       const repoName = ${{ steps.generate_variables.outputs.result }};
-       #       await github.rest.repos.createInOrg({
-       #         name: repoName,
-       #         org: context.repo.owner
-       #       });
-
-        - name: Finish Workflow Comment
-          uses: actions/github-script@v6
-          with:
-            github-token: ${{ steps.get_workflow_token_target.outputs.token }}
-            script: |
-              const issueComment = context.payload.issue.number;
-              github.rest.issues.createComment({
-                issue_number: issueComment,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: 'Workflow finished 🏁'
-              });
+    
+  finish-workflow:
+       uses: ./.github/workflows/comment_in_issue_workflow.yml
+       with:
+        issue_comment: 'Workflow finished 🏁'
+        issue_number: ${{ github.event.issue.number }}
+       secrets: 
+         temp-token: ${{ needs.get-token.outputs.token }}
